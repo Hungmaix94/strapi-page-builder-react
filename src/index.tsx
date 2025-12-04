@@ -18,11 +18,13 @@ export const Render = ({
     data: { content: any; templateJson: any };
     strapi: any;
 }) => {
-    const [data, setData] = useState(null);
+    const [data, setData] = useState<any>(null);
     const processedConfig = useMemo(() => processConfig(strapi, config), [strapi, config]);
 
     useEffect(() => {
-        puckResolveAllData(templateJson, processedConfig, content).then(setData);
+        puckResolveAllData(templateJson, processedConfig, content).then((resolvedData) => {
+            setData(resolvedData);
+        });
     }, [processedConfig, content, templateJson]);
 
     return data ? <PuckRender config={processedConfig} data={data} metadata={content} /> : null;
@@ -31,8 +33,8 @@ export const Render = ({
 // Context
 const EditorContext = createContext({
     templateJson: { content: [], root: {}, zones: {} },
-    setEditorData: (data: any, undo: boolean, redo: boolean) => { },
-    setControls: (undo: any, redo: any, toggleLeft: any, toggleRight: any) => { },
+    setEditorData: (_data: any, _undo: boolean, _redo: boolean) => { },
+    setControls: (_undo: any, _redo: any, _toggleLeft: any, _toggleRight: any) => { },
 });
 
 const LICENCE_SERVER = "https://licence.wc8.io/strapi-page-builder";
@@ -315,7 +317,7 @@ const PreviewWrapper = ({ }) => {
 
     useEffect(() => {
         if (!templateJson) return;
-        const data = { content: [], root: {}, zones: {}, ...templateJson };
+        const data = { ...templateJson };
         dispatch({ type: "setData", data: data });
     }, [templateJson, dispatch]);
 
@@ -326,7 +328,7 @@ const PreviewWrapper = ({ }) => {
     return <Puck.Preview />;
 };
 
-export const DropZone = PuckDropZone;
+export const DropZone: typeof PuckDropZone = PuckDropZone;
 export const FieldLabel = PuckFieldLabel;
 export const walkTree = puckWalkTree;
 export { processProps };

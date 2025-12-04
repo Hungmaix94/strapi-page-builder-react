@@ -27,10 +27,8 @@
     "lint": "eslint . --max-warnings 0",
     "generate:component": "turbo gen react-component",
     "check-types": "tsc --noEmit",
-    "styles": "tailwindcss -i ./src/styles/globals.css -o ./dist/index.css",
-    "dev": "rm -rf dist && tsup src/index.ts src/rsc.tsx --watch",
-    "compile": "rm -rf dist && tsup src/index.ts src/rsc.tsx --minify && sed -i -e 's/\"use client\";*//g' dist/rsc.mjs && sed -i -e 's/\"use client\";*//g' dist/chunk-*.mjs",
-    "build": "pnpm run compile"
+    "dev": "tsup --watch",
+    "build": "tsup"
   },
   "devDependencies": {
     "@turbo/gen": "^2.4.0",

@@ -1,5 +1,5 @@
 import handlebars from "handlebars";
-import React, { lazy } from "react";
+import { lazy } from "react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -226,7 +226,7 @@ export const processConfig = (config: any, strapiConfig: any) => {
 
             if (isStrapi || isObject || isArray) {
                 if (!component.resolveData) {
-                    component.resolveData = async (data: any, params: any) => {
+                    component.resolveData = async (data: any, _params: any) => {
                         let newData = { ...data };
                         try {
                             if (!data.props[fieldName] || !field) return data;
@@ -256,7 +256,7 @@ export const processConfig = (config: any, strapiConfig: any) => {
         if (field?.type === "strapi") {
             if (!newConfig.root) continue;
             if (!newConfig.root.resolveData) {
-                newConfig.root.resolveData = async (data: any, params: any) => {
+                newConfig.root.resolveData = async (data: any, _params: any) => {
                     let newData = { ...data };
                     if (!data.props[fieldName]) return { props: data.props, readOnly: data.readOnly || {} };
                     try {

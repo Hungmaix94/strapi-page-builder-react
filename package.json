@@ -27,8 +27,9 @@
     "lint": "eslint . --max-warnings 0",
     "generate:component": "turbo gen react-component",
     "check-types": "tsc --noEmit",
-    "dev": "tsup --watch",
-    "build": "tsup"
+    "copy-css": "cp node_modules/@measured/puck/dist/index.css dist/index.css",
+    "dev": "tsup --watch && pnpm copy-css",
+    "build": "tsup && pnpm copy-css"
   },
   "devDependencies": {
     "@turbo/gen": "^2.4.0",

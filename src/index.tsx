@@ -37,30 +37,6 @@ const EditorContext = createContext({
     setControls: (_undo: any, _redo: any, _toggleLeft: any, _toggleRight: any) => { },
 });
 
-const LICENCE_SERVER = "https://licence.wc8.io/strapi-page-builder";
-
-const checkLicence = async (apiKey: string) => {
-    let result = { tokens: null, error: null };
-    try {
-        const response = await fetch(`${LICENCE_SERVER}/editor`, {
-            method: "GET",
-            headers: apiKey ? { Authorization: `Bearer ${apiKey}` } : undefined,
-        });
-        if (response.status < 200 || response.status >= 300) {
-            console.error(
-                `[Strapi Page Builder] Licence Server Error ${response.statusText || "Unauthorized"
-                }`
-            );
-            return { ...result, error: response.statusText || "Unauthorized" };
-        }
-        const data = await response.json();
-        return { ...result, ...data };
-    } catch (e: any) {
-        console.error(`[Strapi Page Builder] Licence Server Error ${e.message}`);
-        return { ...result, error: "Unable to communicate with licence server" };
-    }
-};
-
 const sendMessage = (message: any) => {
     if (window.parent && window.parent.postMessage) {
         window.parent.postMessage(message, "*");
@@ -70,14 +46,11 @@ const sendMessage = (message: any) => {
 // Editor Component
 export function Editor({
     config,
-    apiKey,
     strapi,
 }: {
     config: any;
-    apiKey: string;
     strapi: any;
 }) {
-    const [error, setError] = useState("");
     const [permissions, setPermissions] = useState({
         read: false,
         edit: false,
@@ -202,27 +175,6 @@ export function Editor({
         return () => window.removeEventListener("message", handleMessage);
     }, [saveTemplate]);
 
-    useEffect(() => {
-        if (!apiKey) throw new Error("API key is missing");
-        checkLicence(apiKey).then(({ tokens, error }) => {
-            if (error) {
-                setError(error);
-                return;
-            }
-            if (!tokens || !tokens.length) {
-                setError("NO_TOKENS");
-                return;
-            }
-            const token = new URL(window.location.href).searchParams.get(
-                "_pagebuilderToken"
-            );
-            if (!token || !(tokens || []).includes(token)) {
-                setError("INVALID_TOKEN");
-                return;
-            }
-            sendMessage({ type: "child_ready", data: {} });
-        });
-    }, [apiKey]);
 
     return (
         <EditorContext.Provider
@@ -233,23 +185,8 @@ export function Editor({
             }}
         >
             <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
-                {error ? (
-                    <div
-                        style={{
-                            display: "flex",
-                            width: "100vw",
-                            height: "100vh",
-                            alignItems: "center",
-                            justifyContent: "center",
-                        }}
-                    >
-                        <div style={{ width: "50vw", height: "50vh" }}>
-                            <h3>Page Builder Error</h3>
-                            <span>{error}</span>
-                        </div>
-                    </div>
-                ) : null}
-                {!error && templateJson && permissions.read ? (
+
+                {templateJson && permissions.read ? (
                     <Puck
                         config={processConfig({ ...strapi, locale: locale }, config)}
                         data={{ content: [], root: {}, zones: {}, ...templateJson }}

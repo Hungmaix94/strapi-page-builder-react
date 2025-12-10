@@ -47,17 +47,24 @@ const sendMessage = (message: any) => {
 export function Editor({
     config,
     strapi,
+    initialData,
+    initialPermissions,
 }: {
     config: any;
     strapi: any;
+    initialData?: any;
+    initialPermissions?: any;
 }) {
-    const [permissions, setPermissions] = useState({
+    console.log("Editor Rendered", { config, strapi, initialData, initialPermissions });
+    const [permissions, setPermissions] = useState(initialPermissions || {
         read: false,
         edit: false,
         modify: false,
     });
     const [metadata, setMetadata] = useState({});
-    const [templateJson, setTemplateJson] = useState<any>(null);
+    const [templateJson, setTemplateJson] = useState<any>(initialData || null);
+
+    console.log("Editor State", { permissions, templateJson });
     const [canEdit, setCanEdit] = useState(true);
     const [locale, setLocale] = useState("");
     const [enforceTemplateShape, setEnforceTemplateShape] = useState(true);
@@ -185,7 +192,6 @@ export function Editor({
             }}
         >
             <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
-
                 {templateJson && permissions.read ? (
                     <Puck
                         config={processConfig({ ...strapi, locale: locale }, config)}

@@ -6,6 +6,7 @@ import { FieldLabel as PuckFieldLabel, walkTree as puckWalkTree } from "@measure
 import { Render as PuckRender, resolveAllData as puckResolveAllData } from "@measured/puck";
 import { useEffect, useMemo, useState, createContext, useCallback, useContext, useRef } from "react";
 import { Puck, usePuck } from "@measured/puck";
+import { useApiKeyValidation } from "./hooks/useApiKeyValidation";
 import "@measured/puck/puck.css";
 
 // Render Component
@@ -47,10 +48,19 @@ const sendMessage = (message: any) => {
 export function Editor({
     config,
     strapi,
+    apiKey,
+    validateApiKey = false,
 }: {
     config: any;
     strapi: any;
+    apiKey?: string;
+    validateApiKey?: boolean;
 }) {
+    const validation = useApiKeyValidation(
+        validateApiKey ? apiKey : undefined,
+        validateApiKey ? strapi?.url : undefined
+    );
+
     const [permissions, setPermissions] = useState({
         read: false,
         edit: false,
@@ -175,6 +185,47 @@ export function Editor({
         return () => window.removeEventListener("message", handleMessage);
     }, [saveTemplate]);
 
+    // Show validation error if API key validation is enabled and failed
+    if (validateApiKey && !validation.loading && !validation.isValid) {
+        return (
+            <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100vh',
+                fontFamily: 'system-ui, -apple-system, sans-serif'
+            }}>
+                <div style={{
+                    maxWidth: '500px',
+                    padding: '32px',
+                    background: '#fee',
+                    border: '2px solid #c33',
+                    borderRadius: '8px'
+                }}>
+                    <h2 style={{ color: '#c33', marginTop: 0 }}>API Key Validation Failed</h2>
+                    <p style={{ color: '#333' }}>{validation.error || 'Invalid API key'}</p>
+                    <p style={{ color: '#666', fontSize: '14px', marginBottom: 0 }}>
+                        Please check your API key configuration and try again.
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
+    // Show loading state during validation
+    if (validateApiKey && validation.loading) {
+        return (
+            <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100vh',
+                fontFamily: 'system-ui, -apple-system, sans-serif'
+            }}>
+                <div>Validating API key...</div>
+            </div>
+        );
+    }
 
     return (
         <EditorContext.Provider
@@ -269,3 +320,4 @@ export const DropZone: typeof PuckDropZone = PuckDropZone;
 export const FieldLabel = PuckFieldLabel;
 export const walkTree = puckWalkTree;
 export { processProps };
+export { useApiKeyValidation };

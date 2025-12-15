@@ -1,6 +1,6 @@
 {
   "name": "@bigfatpanda1994/strapi-page-builder-react",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "exports": {
     ".": {
       "default": {

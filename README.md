@@ -1,5 +1,5 @@
 <div align="center">
-   <img alt="Page Builder" width="60" src="https://pagebuilder.wc8.io/pagebuilder_logo.png">
+   <img alt="Page Builder" width="60" src="static/pagebuilder_logo.png">
 </div>
 <h1 align="center">Page Builder - React Companion</h1>
 <p align="center">Visual, drag and drop page editor for Strapi.</p>
@@ -18,13 +18,13 @@
 
 <br>
 
-<img style="width: 100%; height: auto;" src="https://pagebuilder.wc8.io/pagebuilder_animation.gif" alt="Page Builder Overview" /> <br/>
+<img style="width: 100%; height: auto;" src="static/pagebuilder_animation.gif" alt="Page Builder Overview" /> <br/>
 
 <br/><br/>
 
 ## Documentation
 
-Read the complete documentation at https://pagebuilder.wc8.io
+For documentation on plugin development, refer to the [Strapi Plugin Development Guide](https://docs.strapi.io/dev-docs/plugins-development).
 
 ## Page Builder plugin for Strapi
 
@@ -38,7 +38,7 @@ The Page Builder plugin adds a visual page editor to Strapi, leting you drag and
 
 Setting up Page Builder is quick and easy.
 
-1. Sign up for a free Page Builder API key at https://pagebuilder.wc8.io
+1. Create an API key using the built-in API key management system (see Configuration section below)
 1. Add the [@wecre8websites/strapi-page-builder](https://www.npmjs.com/package/@wecre8websites/strapi-page-builder) package to your Strapi project.
 1. Add the new template relation field to one or more of your Strapi content types.
 1. Configure the Page Builder plugin with your API key, Editor URL and select the default content type and content.

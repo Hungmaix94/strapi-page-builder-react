@@ -139,6 +139,7 @@ export function Editor({
             const message = event.data;
             switch (message.type) {
                 case "populate": {
+                    console.log("[React SDK] Received populate message:", message.data);
                     setTemplateJson(null);
                     const {
                         contentData,
@@ -150,6 +151,7 @@ export function Editor({
                     } = message.data;
 
                     setTimeout(() => {
+                        console.log("[React SDK] Setting state:", { newTemplateJson, newPermissions, isDefaultLocale });
                         if (contentData) setMetadata(contentData);
                         if (newTemplateJson) setTemplateJson(newTemplateJson);
                         if (newPermissions) setPermissions(newPermissions);
@@ -182,6 +184,11 @@ export function Editor({
             }
         };
         window.addEventListener("message", handleMessage);
+        // Signal to parent that we are ready to receive data
+        sendMessage({
+            type: "child_ready",
+            data: {},
+        });
         return () => window.removeEventListener("message", handleMessage);
     }, [saveTemplate]);
 
